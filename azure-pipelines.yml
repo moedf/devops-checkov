@@ -82,10 +82,13 @@ steps:
 - script: |
     #!/bin/bash
     
-    # Install Checkov using pip
-    pip3 install checkov || exit 99
+    # Install Checkov using pip with full path
+    pip3 install --ignore-installed --no-input --upgrade --no-cache-dir --prefix=/usr/local checkov || exit 99
+    sudo chmod +x /usr/local/bin/checkov
     
+    # Check Checkov version
+    checkov_version=$(checkov --version 2>&1)
     green='\033[0;32m'; clear='\033[0m'
     
-    printf "${green}Installed Checkov $(checkov --version) ${clear}"
-  displayName: 'Install Checkov'
+    printf "${green}Installed Checkov ${checkov_version} ${clear}"
+  displayName: 'Install Checkov and Check Version'
