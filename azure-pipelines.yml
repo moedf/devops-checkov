@@ -1,0 +1,91 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- nove
+
+pool: edfstage
+
+steps:
+- script: |
+    #!/bin/bash
+    # shellcheck disable=SC2086,SC2059,SC1073,SC1072 # skip checks before scripts are complete
+    
+    # PIP3 Managed packages
+    # Update the installed version (installed from Python39)
+    # Install or Update required Python Packages
+    #
+    # https://pypi.org/project/setuptools/
+    # https://virtualenv.pypa.io/en/latest/installation.html
+    
+    export DEBIAN_FRONTEND=noninteractive
+    echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+    
+    #--------------------------------------------------------------
+    # Pip installs for python 3.8
+    #--------------------------------------------------------------
+    
+    sudo update-alternatives --set python /usr/bin/python3.8
+    sudo chown -R AzDevOps /usr/local
+    
+    pip3 install -U --ignore-installed --no-input --no-cache-dir --prefix=/usr/local \
+        setuptools \
+        virtualenv \
+        pytest \
+        pytest-cov \
+        pytest-azurepipelines \
+        mypy || exit 99
+    
+    #--------------------------------------------------------------
+    # Pip for python 3.9
+    #--------------------------------------------------------------
+    
+    sudo update-alternatives --set python /usr/bin/python3.9
+    sudo chown -R AzDevOps /usr/local
+    
+    pip3 install -U --ignore-installed --no-input --no-cache-dir --prefix=/usr/local \
+        setuptools \
+        virtualenv \
+        pytest \
+        pytest-cov \
+        pytest-azurepipelines \
+        mypy || exit 99
+    
+    green='\033[0;32m'; clear='\033[0m'
+    
+    printf "${green} installed $(which pip3) $(pip3 --version) ${clear}
+            ${green} installed $(which virtualenv) $(virtualenv --version) ${clear}
+            ${green} installed $(which pytest) $(pytest --version) ${clear}
+            ${green} installed $(which mypy) $(mypy --version) ${clear}"
+  displayName: 'Install Python Packages'
+
+- script: |
+    #!/bin/bash
+    # shellcheck disable=SC2086,SC2059,SC1073,SC1072 # skip checks before scripts are complete
+    
+    # Checkov
+    # Install the checkov application using pip3 (python3)
+    #
+    # https://www.checkov.io/2.Basics/Installing%20Checkov.html
+    
+    export DEBIAN_FRONTEND=noninteractive
+    echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+    
+    sudo apt-get install -qq -y python3-testresources
+    
+    #--------------------------------------------------------------
+    # Checkov installs for python 3.9
+    #--------------------------------------------------------------
+    
+    sudo update-alternatives --set python /usr/bin/python3.9
+    sudo chown -R AzDevOps /usr/local
+    
+    pip3 install --ignore-installed --no-input --upgrade --no-cache-dir --prefix=/usr/local checkov || exit 99
+    sudo chmod +x /usr/local/bin/checkov
+    
+    green='\033[0;32m'; clear='\033[0m'
+    
+    printf "${green} installed $(which checkov) $(checkov --version) ${clear}"
+  displayName: 'Install Checkov'
