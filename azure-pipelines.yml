@@ -28,7 +28,7 @@ steps:
     #--------------------------------------------------------------
     
     sudo update-alternatives --set python /usr/bin/python3.8
-    sudo chown -R AzDevOps /usr/local
+    sudo chown -R moedf /usr/local
     
     pip3 install -U --ignore-installed --no-input --no-cache-dir --prefix=/usr/local \
         setuptools \
@@ -43,7 +43,7 @@ steps:
     #--------------------------------------------------------------
     
     sudo update-alternatives --set python /usr/bin/python3.9
-    sudo chown -R AzDevOps /usr/local
+    sudo chown -R moedf /usr/local
     
     pip3 install -U --ignore-installed --no-input --no-cache-dir --prefix=/usr/local \
         setuptools \
