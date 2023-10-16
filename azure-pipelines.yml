@@ -78,3 +78,14 @@ steps:
             ${green} installed $(which pytest) $(pytest --version) ${clear}
             ${green} installed $(which mypy) $(mypy --version) ${clear}"
   displayName: 'Install Python Packages'
+
+- script: |
+    #!/bin/bash
+    
+    # Install Checkov using pip
+    pip3 install checkov || exit 99
+    
+    green='\033[0;32m'; clear='\033[0m'
+    
+    printf "${green}Installed Checkov $(checkov --version) ${clear}"
+  displayName: 'Install Checkov'
